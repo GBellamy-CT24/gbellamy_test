@@ -15,8 +15,6 @@ autoinstall:
     username: ct24-tv
     password: '6378511f645036024baf14f3722078f50ee869c0214283f13c1f752c80390007d0535ccc1bab25853503314edea7041a5e816993f30e23016e1d577bcc57348a'
     hostname: CT24-TV05
-  early-commands:
-    - echo 'linux-generic-hwe-22.04' > /run/kernel-meta-package
   late-commands:
     - curtin in-target -- apt-get update
     - curtin in-target -- apt-get upgrade
