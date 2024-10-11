@@ -1,4 +1,3 @@
-#cloud-config
 autoinstall:
   version: 1
   packages:
@@ -11,39 +10,21 @@ autoinstall:
     - name: snap-store
     - name: snapd-desktop-integration
   updates: all
-#Create user
   identity:
     realname: 'CT24 TV05'
     username: ct24-tv
-    # A password hash is needed. `mkpasswd --method=SHA-512` can help.
-    # mkpasswd can be found in the package 'whois'
     password: '6378511f645036024baf14f3722078f50ee869c0214283f13c1f752c80390007d0535ccc1bab25853503314edea7041a5e816993f30e23016e1d577bcc57348a'
     hostname: CT24-TV05
-
-  # Subiquity will, by default, configure a partition layout using LVM.
-  # The 'direct' layout method shown here will produce a non-LVM result.
-  storage:
-    layout:
-      name: direct
-
-  # Ubuntu Desktop uses the hwe flavor kernel by default.
   early-commands:
     - echo 'linux-generic-hwe-22.04' > /run/kernel-meta-package
   late-commands:
-# Basic post install commands
     - curtin in-target -- apt-get update
     - curtin in-target -- apt-get upgrade
     - curtin in-target -- apt install cron
-# install Datto  
     - curtin in-target -- sudo wget -O setup.sh https://pinotage.centrastage.net/csm/profile/downloadLinuxAgent/e4ccf450-24d5-4bcf-9848-c317d4bd93c8 && sudo sh setup.sh   
     - curtin in-target -- bash -c 'echo "0 18 * * * root /usr/bin/apt update && /usr/bin/apt upgrade -y" >> /etc/crontab' 
-  
-  # Install Chromium browser (if not installed already)
     - curtin in-target -- apt install -y chromium-browser
-
-  # Create a .desktop file to open Chromium in fullscreen mode at startup
     - curtin in-target -- bash -c 'mkdir -p /home/ubuntu/.config/autostart'
-
     - curtin in-target -- bash -c 'echo | 
       "[Desktop Entry]
       Type=Application
@@ -54,35 +35,17 @@ autoinstall:
       Name=Open Chromium Fullscreen
       Comment=Open Chromium in fullscreen mode at startup
       " > /home/ubuntu/.config/autostart/chromium-fullscreen.desktop'
-
-  # Ensure correct permissions for the .desktop file
     - curtin in-target -- chown ubuntu:ubuntu /home/ct24-tv/.config/autostart/chromium-fullscreen.desktop
     - curtin in-target -- chmod +x /home/ct24-tv/.config/autostart/chromium-fullscreen.desktop
-    # Enable the boot splash
     - >-
       curtin in-target --
       sed -i /etc/default/grub -e
       's/GRUB_CMDLINE_LINUX_DEFAULT=".*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/'
     - curtin in-target -- update-grub
-
-    # Let NetworkManager handle network
     - rm /target/etc/netplan/00-installer-config*yaml
     - >-
       printf "network:\n  version: 2\n  renderer: NetworkManager"
       > /target/etc/netplan/01-network-manager-all.yaml
-
-    # Remove default filesystem and related tools not used with the suggested
-    # 'direct' storage layout.  These may yet be required if different
-    # partitioning schemes are used.
     - >-
-      curtin in-target -- apt-get remove -y
-      btrfs-progs cryptsetup* lvm2 xfsprogs
-
-
-
-    # Keep cloud-init, as it performs some of the installation on first boot.
     - curtin in-target -- apt-get install -y cloud-init
-
-    # Finally, remove things only installed as dependencies of other things
-    # we have already removed.
     - curtin in-target -- apt-get autoremove -y
