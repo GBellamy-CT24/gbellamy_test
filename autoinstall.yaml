@@ -19,7 +19,7 @@ autoinstall:
     - curtin in-target -- apt-get update
     - curtin in-target -- apt-get upgrade
     - curtin in-target -- apt install cron
-    - curtin in-target -- sudo wget -O setup.sh https://pinotage.centrastage.net/csm/profile/downloadLinuxAgent/e4ccf450-24d5-4bcf-9848-c317d4bd93c8 && sudo sh setup.sh   
+    - curtin in-target -- bash -c 'cd /tmp && sudo wget -O setup.sh https://pinotage.centrastage.net/csm/profile/downloadLinuxAgent/e4ccf450-24d5-4bcf-9848-c317d4bd93c8 && sudo sh /tmp/setup.sh'
     - curtin in-target -- bash -c 'echo "0 18 * * * root /usr/bin/apt update && /usr/bin/apt upgrade -y" >> /etc/crontab' 
     - curtin in-target -- apt install -y chromium-browser
     - curtin in-target -- bash -c 'mkdir -p /home/ubuntu/.config/autostart'
