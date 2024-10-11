@@ -28,7 +28,7 @@ autoinstall:
     - curtin in-target -- bash -c 'echo | 
       "[Desktop Entry]
       Type=Application
-      Exec=chromium-browser --kiosk http://example.com
+      Exec=chromium-browser --kiosk https://ct24.brightgauge.co/dashboards/79a3d26d-3212-47f4-bc56-9c3a7ee28565/
       Hidden=false
       NoDisplay=false
       X-GNOME-Autostart-enabled=true
