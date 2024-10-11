@@ -13,7 +13,7 @@ autoinstall:
   identity:
     realname: 'CT24 TV05'
     username: ct24-tv
-    password: '6378511f645036024baf14f3722078f50ee869c0214283f13c1f752c80390007d0535ccc1bab25853503314edea7041a5e816993f30e23016e1d577bcc57348a'
+    password: '$6$6e64be7d811920bc$kB7iuftyQBVNL8Ep1iUz5ArxQx24uuwadWVLVs2DooyYCzBoqBuvlz9p6/tbxtaiDwjWH77myByY8I7meS.z6.'
     hostname: CT24-TV05
   late-commands:
     - curtin in-target -- apt-get update
